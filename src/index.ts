@@ -1,4 +1,5 @@
 import wppconnect from '@wppconnect-team/wppconnect';
+import puppeteer from 'puppeteer';
 
 import dotenv from 'dotenv';
 import { initializeNewAIChatSession, mainOpenAI } from './service/openai';
@@ -24,7 +25,7 @@ if (
   (!process.env.OPENAI_KEY || !process.env.OPENAI_ASSISTANT)
 ) {
   throw Error(
-    'Para utilizar o GPT você precisa colocar no .env a sua key da openai e o id do seu assistante.'
+    'Para utilizar o GPT você precisa colocar no .env a sua key da openai e o id do seu assistente.'
   );
 }
 
@@ -125,4 +126,5 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
     })();
   });
 }
+
 
