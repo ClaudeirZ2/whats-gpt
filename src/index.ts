@@ -125,5 +125,4 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
     })();
   });
 }
-}
 
