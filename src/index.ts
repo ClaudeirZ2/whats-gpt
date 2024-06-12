@@ -1,5 +1,5 @@
 import wppconnect from '@wppconnect-team/wppconnect';
-import puppeteer from 'puppeteer';
+
 import dotenv from 'dotenv';
 import { initializeNewAIChatSession, mainOpenAI } from './service/openai';
 import { splitMessages, sendMessagesWithDelay } from './util';
@@ -24,62 +24,28 @@ if (
   (!process.env.OPENAI_KEY || !process.env.OPENAI_ASSISTANT)
 ) {
   throw Error(
-    'Para utilizar o GPT você precisa colocar no .env a sua key da openai e o id do seu assistente.'
+    'Para utilizar o GPT você precisa colocar no .env a sua key da openai e o id do seu assistante.'
   );
 }
 
-(async () => {
-  const browserPath = puppeteer.executablePath();
-
-  console.log('Iniciando wppconnect...');
-  wppconnect
-    .create({
-      session: 'sessionName',
-      catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
-        console.log('Terminal qrcode: ', asciiQR);
-      },
-      statusFind: (statusSession, session) => {
-        console.log('Status Session: ', statusSession);
-        console.log('Session name: ', session);
-      },
-      headless: false,
-      puppeteerOptions: {
-        executablePath: browserPath,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--no-zygote',
-          '--single-process',
-          '--no-first-run',
-          '--disable-background-networking',
-          '--disable-background-timer-throttling',
-          '--disable-client-side-phishing-detection',
-          '--disable-default-apps',
-          '--disable-hang-monitor',
-          '--disable-prompt-on-repost',
-          '--disable-sync',
-          '--disable-translate',
-          '--metrics-recording-only',
-          '--safebrowsing-disable-auto-update',
-          '--disable-extensions',
-          '--disable-translate',
-          '--disable-features=site-per-process',
-          '--disable-site-isolation-trials',
-        ],
-        ignoreHTTPSErrors: true,
-        dumpio: true, // para logar saída do navegador no console
-      },
-    })
-    .then((client) => {
-      console.log('Cliente iniciado com sucesso.');
-      start(client);
-    })
-    .catch((erro) => {
-      console.error('Erro ao iniciar cliente:', erro);
-    });
-})();
+wppconnect
+  .create({
+    session: 'sessionName',
+    catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
+      console.log('Terminal qrcode: ', asciiQR);
+    },
+    statusFind: (statusSession, session) => {
+      console.log('Status Session: ', statusSession);
+      console.log('Session name: ', session);
+    },
+    headless: 'new' as any,
+  })
+  .then((client) => {
+    start(client);
+  })
+  .catch((erro) => {
+    console.log(erro);
+  });
 
 async function start(client: wppconnect.Whatsapp): Promise<void> {
   client.onMessage((message) => {
@@ -116,10 +82,6 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
                 ? message.body
                 : [...messageBufferPerChatId.get(chatId)].join(' \n ');
               let answer = '';
-              
-              // Indicando que estamos digitando
-              client.startTyping(chatId).catch(console.error);
-      
               for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
                 try {
                   if (AI_SELECTED === 'GPT') {
@@ -135,15 +97,11 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
                   }
                   break;
                 } catch (error) {
-                  console.error(`Erro na tentativa ${attempt}:`, error);
                   if (attempt === MAX_RETRIES) {
                     throw error;
                   }
                 }
               }
-              // Parando a indicação de que estamos digitando
-              client.stopTyping(chatId).catch(console.error);
-              
               const messages = splitMessages(answer);
               console.log('Enviando mensagens...');
               await sendMessagesWithDelay({
