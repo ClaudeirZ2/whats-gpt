@@ -39,6 +39,7 @@ wppconnect
       console.log('Session name: ', session);
     },
     headless: 'new' as any,
+    autoClose: 60000 // Aumente o tempo limite para 60 segundos (60000 ms)
   })
   .then((client) => {
     start(client);
