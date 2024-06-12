@@ -1,6 +1,5 @@
 import wppconnect from '@wppconnect-team/wppconnect';
 import puppeteer from 'puppeteer';
-
 import dotenv from 'dotenv';
 import { initializeNewAIChatSession, mainOpenAI } from './service/openai';
 import { splitMessages, sendMessagesWithDelay } from './util';
@@ -39,7 +38,11 @@ wppconnect
       console.log('Status Session: ', statusSession);
       console.log('Session name: ', session);
     },
-    headless: 'new' as any,
+    headless: true,
+    puppeteerOptions: {
+      executablePath: '/usr/bin/chromium-browser', // Especifica o caminho do Chromium
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    },
   })
   .then((client) => {
     start(client);
@@ -126,5 +129,6 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
     })();
   });
 }
+
 
 
