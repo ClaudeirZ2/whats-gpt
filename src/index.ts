@@ -28,6 +28,7 @@ if (
   );
 }
 
+console.log('Iniciando wppconnect...');
 wppconnect
   .create({
     session: 'sessionName',
@@ -40,15 +41,16 @@ wppconnect
     },
     headless: false,
     puppeteerOptions: {
-      executablePath: '/usr/bin/chromium-browser', // Especifica o caminho do Chromium
+      executablePath: '/usr/bin/chromium-browser', // Verifique o caminho do Chromium
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     },
   })
   .then((client) => {
+    console.log('Cliente iniciado com sucesso.');
     start(client);
   })
   .catch((erro) => {
-    console.log(erro);
+    console.error('Erro ao iniciar cliente:', erro);
   });
 
 async function start(client: wppconnect.Whatsapp): Promise<void> {
@@ -105,6 +107,7 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
                   }
                   break;
                 } catch (error) {
+                  console.error(`Erro na tentativa ${attempt}:`, error);
                   if (attempt === MAX_RETRIES) {
                     throw error;
                   }
@@ -129,6 +132,7 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
     })();
   });
 }
+
 
 
 
