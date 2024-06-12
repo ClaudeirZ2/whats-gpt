@@ -28,54 +28,58 @@ if (
   );
 }
 
-console.log('Iniciando wppconnect...');
-wppconnect
-  .create({
-    session: 'sessionName',
-    catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
-      console.log('Terminal qrcode: ', asciiQR);
-    },
-    statusFind: (statusSession, session) => {
-      console.log('Status Session: ', statusSession);
-      console.log('Session name: ', session);
-    },
-    headless: false,
-    puppeteerOptions: {
-      executablePath: '/usr/bin/chromium-browser',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--no-zygote',
-        '--single-process',
-        '--no-first-run',
-        '--disable-background-networking',
-        '--disable-background-timer-throttling',
-        '--disable-client-side-phishing-detection',
-        '--disable-default-apps',
-        '--disable-hang-monitor',
-        '--disable-prompt-on-repost',
-        '--disable-sync',
-        '--disable-translate',
-        '--metrics-recording-only',
-        '--safebrowsing-disable-auto-update',
-        '--disable-extensions',
-        '--disable-translate',
-        '--disable-features=site-per-process',
-        '--disable-site-isolation-trials',
-      ],
-      ignoreHTTPSErrors: true,
-      dumpio: true, // para logar saída do navegador no console
-    },
-  })
-  .then((client) => {
-    console.log('Cliente iniciado com sucesso.');
-    start(client);
-  })
-  .catch((erro) => {
-    console.error('Erro ao iniciar cliente:', erro);
-  });
+(async () => {
+  const browserPath = puppeteer.executablePath();
+
+  console.log('Iniciando wppconnect...');
+  wppconnect
+    .create({
+      session: 'sessionName',
+      catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
+        console.log('Terminal qrcode: ', asciiQR);
+      },
+      statusFind: (statusSession, session) => {
+        console.log('Status Session: ', statusSession);
+        console.log('Session name: ', session);
+      },
+      headless: false,
+      puppeteerOptions: {
+        executablePath: browserPath,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-zygote',
+          '--single-process',
+          '--no-first-run',
+          '--disable-background-networking',
+          '--disable-background-timer-throttling',
+          '--disable-client-side-phishing-detection',
+          '--disable-default-apps',
+          '--disable-hang-monitor',
+          '--disable-prompt-on-repost',
+          '--disable-sync',
+          '--disable-translate',
+          '--metrics-recording-only',
+          '--safebrowsing-disable-auto-update',
+          '--disable-extensions',
+          '--disable-translate',
+          '--disable-features=site-per-process',
+          '--disable-site-isolation-trials',
+        ],
+        ignoreHTTPSErrors: true,
+        dumpio: true, // para logar saída do navegador no console
+      },
+    })
+    .then((client) => {
+      console.log('Cliente iniciado com sucesso.');
+      start(client);
+    })
+    .catch((erro) => {
+      console.error('Erro ao iniciar cliente:', erro);
+    });
+})();
 
 async function start(client: wppconnect.Whatsapp): Promise<void> {
   client.onMessage((message) => {
@@ -156,6 +160,7 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
     })();
   });
 }
+
 
 
 
