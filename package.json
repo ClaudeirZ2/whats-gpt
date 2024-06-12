@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "config": "node ./setup.js",
-    "dev": "tsx watch src/index.ts",
+    "dev": "xvfb-run -a tsx watch src/index.ts",
     "build": "tsup src",
     "start": "npm run build && npx pm2 start dist/index.cjs --name zap-gpt --no-daemon",
     "stop": "npx pm2 delete zap-gpt"
