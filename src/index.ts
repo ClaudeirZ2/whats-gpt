@@ -38,7 +38,7 @@ wppconnect
       console.log('Status Session: ', statusSession);
       console.log('Session name: ', session);
     },
-    headless: true,
+    headless: false,
     puppeteerOptions: {
       executablePath: '/usr/bin/chromium-browser', // Especifica o caminho do Chromium
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
