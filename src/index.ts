@@ -83,6 +83,10 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
                 ? message.body
                 : [...messageBufferPerChatId.get(chatId)].join(' \n ');
               let answer = '';
+              
+              // Indicando que estamos digitando
+              client.startTyping(chatId).catch(console.error);
+      
               for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
                 try {
                   if (AI_SELECTED === 'GPT') {
@@ -103,6 +107,9 @@ async function start(client: wppconnect.Whatsapp): Promise<void> {
                   }
                 }
               }
+              // Parando a indicação de que estamos digitando
+              client.stopTyping(chatId).catch(console.error);
+              
               const messages = splitMessages(answer);
               console.log('Enviando mensagens...');
               await sendMessagesWithDelay({
