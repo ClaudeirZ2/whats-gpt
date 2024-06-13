@@ -39,6 +39,7 @@ wppconnect
       console.log('Session name: ', session);
     },
     headless: 'new' as any,
+    autoclose: false
   })
   .then((client) => {
     start(client);
