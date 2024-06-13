@@ -32,7 +32,7 @@ if (AI_SELECTED === 'GPT' && (!process.env.OPENAI_KEY || !process.env.OPENAI_ASS
         console.log('Session name: ', session);
       },
       headless: 'new' as any,
-      autoClose: 60000 // Aumente o tempo limite para 60 segundos (60000 ms)
+      autoClose: 300000 // 5 minutos (300000 ms)
     });
 
     start(client);
